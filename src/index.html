@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Hls.js with P2P Media Loader</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div>
+    <label for="name">WebTorrent trackers:</label>
+    <input disabled type="text" id="trackers" name="trackers" required>
+    <br/>
+    <label for="name">STUN servers:</label>
+    <textarea disabled type="text" id="stuns" name="stuns" required></textarea>
+    <br/>
+    <label for="name">HLS stream URL:</label>
+    <input disabled type="text" id="hls" name="hls" required>
+    <br/>
+    <button disabled id="play">Play</button>
+    <button disabled id="stop">Stop</button>
+  </div>
+  <video autoplay controls muted id="video"></video>
+  <div id="graph"></div>
+</body>
+<script src="index.js"></script>
+</html>

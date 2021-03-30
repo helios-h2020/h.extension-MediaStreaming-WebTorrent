@@ -1,0 +1,33 @@
+{
+  "name": "p2p-mediastream",
+  "version": "0.0.0",
+  "description": "Showcase of P2P HLS streaming using WebTorrent",
+  "main": "public/index.html",
+  "scripts": {
+    "build": "parcel build ./src/index.html",
+    "build:dev": "NODE_ENV=development npm run build -- --no-optimize",
+    "dev": "scripts/dev.sh",
+    "generate-video": "scripts/generate-video.sh",
+    "prepare": "npm run build",
+    "prestart": "npm run build",
+    "start": "scripts/start.sh"
+  },
+  "author": "Jesús Leganés-Combarro 'piranna' <piranna@gmail.com>",
+  "license": "ISC",
+  "browserslist": [
+    "supports rtcpeerconnection",
+    "not dead"
+  ],
+  "dependencies": {
+    "hls.js": "^0.14.17",
+    "p2p-graph": "piranna/p2p-graph",
+    "p2p-media-loader-core": "^0.6.2",
+    "p2p-media-loader-hlsjs": "^0.6.2",
+    "unify-config": "^0.6.4"
+  },
+  "devDependencies": {
+    "ffmpeg-static": "^4.2.8",
+    "parcel": "^2.0.0-beta.2",
+    "wt-tracker": "piranna/wt-tracker"
+  }
+}

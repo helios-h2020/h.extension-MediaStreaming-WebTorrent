@@ -1,0 +1,6 @@
+#graph {
+  max-width: 100%;
+  overflow: hidden;
+  margin: 3em auto;
+  border: 1px solid #eee;
+}

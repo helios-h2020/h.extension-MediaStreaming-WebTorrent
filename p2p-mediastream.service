@@ -1,0 +1,12 @@
+Description=P2P mediastream
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=ubuntu
+WorkingDirectory=/home/ubuntu/p2p-mediastream
+ExecStart=/home/ubuntu/p2p-mediastream/scripts/dev.sh
+
+[Install]
+WantedBy=multi-user.target
