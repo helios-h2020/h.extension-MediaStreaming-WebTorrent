@@ -1,4 +1,4 @@
-Description=P2P mediastream
+Description=RTMP test card
 
 [Service]
 Type=simple
@@ -6,7 +6,7 @@ Restart=always
 RestartSec=1
 User=ubuntu
 WorkingDirectory=/home/ubuntu/p2p-mediastream
-ExecStart=/home/ubuntu/p2p-mediastream/scripts/start.sh
+ExecStart=/home/ubuntu/p2p-mediastream/scripts/generate-video.sh
 
 [Install]
 WantedBy=multi-user.target
