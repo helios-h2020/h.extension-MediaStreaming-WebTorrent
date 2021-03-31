@@ -1,4 +1,7 @@
+.git/
 .parcel-cache/
 node_modules/
 public/
+.gitignore
 config.json
+npm-debug.log

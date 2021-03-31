@@ -23,11 +23,11 @@
     "p2p-graph": "piranna/p2p-graph",
     "p2p-media-loader-core": "^0.6.2",
     "p2p-media-loader-hlsjs": "^0.6.2",
-    "unify-config": "^0.6.4"
+    "parcel": "^2.0.0-beta.2",
+    "unify-config": "^0.6.4",
+    "wt-tracker": "piranna/wt-tracker"
   },
   "devDependencies": {
-    "ffmpeg-static": "^4.2.8",
-    "parcel": "^2.0.0-beta.2",
-    "wt-tracker": "piranna/wt-tracker"
+    "ffmpeg-static": "^4.2.8"
   }
 }
