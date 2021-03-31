@@ -2,65 +2,81 @@
 
 Showcase of P2P HLS streaming using WebTorrent
 
-This project is a Proof-of-Concept about how to distribute a HLS stream in a P2P
-way using WebTorrent. In case a P2P connection can't be stablished, stream will
-use regular HLS instead.
+This project is a Proof-of-Concept about how to distribute HLS streams in a P2P
+way using WebTorrent. This **is not** a replacement of using a HLS stream
+server, but instead complements them to reduce server costs by offloading server
+bandwidth usage to the peers.
 
-For testing purposses, stream is just a video test card, being the P2P
-management fully on client-side code, it's easy to use any other HLS stream as
-source.
+## Why to use this
+
+[HTTP Live Streaming](https://developer.apple.com/streaming/) is based on the
+HLS clients doing plain `GET` HTTP requests of stream fragments. These ones
+doesn't change over time, so it's possible to use "fragment" files on a CDN or a
+static web server instead of a regular one and reduce costs. But also in that
+case, all requests will go to them and there will be network costs. By taking a
+P2P aproach, it's possible to serve these fragment files the same way any P2P
+filesharing application would do, reducing network costs by fetching them from
+other users that have already got them. In this case, the P2P protocol being
+used is [BitTorrent](https://www.bittorrent.com/), and more specifically the
+[WebTorrent](https://webtorrent.io/) implementation, that allow to use it in web
+browsers.
 
 ## Architecture
 
 ![](https://raw.githubusercontent.com/Novage/p2p-media-loader/gh-pages/images/p2p-media-loader-network.png)
 
-Project has five diferenciated components:
+This proof-of-concept has five diferenciated components:
 
-- **test card generator**: script that generates the HLS stream using
-  [ffmpeg](https://www.ffmpeg.org/). It store the stream fragments in the `hls/`
-  folder and automatically deletes the old ones
+- **test card generator**: a script that generates a HLS stream using
+  [ffmpeg](https://www.ffmpeg.org/), and it's used as stream source only for
+  testing and demoing purposses. It store the HLS stream fragment filess in the
+  `hls/` folder and automatically deletes the old ones.
 - **static HTTP server**: used to serve both the webpage content and the HLS
-  stream fragments
+  stream fragments.
 - **WebTorrent tracker**: used to interconnect the WebTorrent clients, and due
-  to that, it's also working internally as WebRTC signaling server too. By
+  to that, internally it's also working as WebRTC signaling server too. By
   default it use the tracker from [OpenWebTorrent](https://openwebtorrent.com/),
-  but I'm using a instance of [wt-tracker](https://github.com/Novage/wt-tracker)
-  instead. I've modified it to also works as
-  [static HTTP server](https://github.com/Novage/wt-tracker/issues/28) so it can
-  be used to serve the WebTorrent client code and work as HLS streams server.
-- **STUN servers**: used to find clients public IPs, by default use Google
-  public servers but here I'm using my own ones. There's no need of using TURN
+  but here we are using instead a instance of
+  [wt-tracker](https://github.com/Novage/wt-tracker). I've modified it to also
+  work as [static HTTP server](https://github.com/Novage/wt-tracker/issues/28)
+  so it can serve too the WebTorrent client code and work as HLS streams server.
+- **STUN servers**: used to find clients public IPs, by default using the Google
+  public servers, but here I'm using my own ones. There's no need of using TURN
   servers since in case a direct WebRTC connection is not possible, using a TURN
-  server would only add delay and extra costs compared to using standard HLS
-  streaming, so clients use it directly as fallback instead.
+  server would only add delays and extra costs compared to using a standard HLS
+  streaming, so instead clients are going to fetch fragment files directly from
+  the HLS stream server automatically as fallback.
 - **WebTorrent client**: powered by
   [P2P Media Loader](https://github.com/Novage/p2p-media-loader), it manages
   both the fetch and processing of the HLS stream from the P2P network, being
   fully automated. It supports working with both
   [hls.js](https://github.com/video-dev/hls.js) library (only HLS) and
   [Shaka Player](https://github.com/google/shaka-player) (both HLS and DASH),
-  and their derivatives.
+  and their derivatives, although this proof-of-concept is making use only of
+  the first one.
 
 ## How it works
+
+For testing purposses, stream is just a video test card, being the .
 
 P2P Media Loader starts downloading the stream fragments from the HLS stream,
 that's using a HTTP server or a CDN. At the same time, it connects to the
 WebTorrent tracker using WebSockets to exchange the WebRTC SDPs to create
 connections with the other peers, and start using the BitTorrent protocol to
-find other peers and ask for missing stream fragments.
+find other peers and ask for missing stream fragments. In case a P2P connection
+can't be stablished, or no one has the missing fragments, they will still be
+fetch using regular HLS instead.
 
 When the playing of the HLS stream starts, it first pick the stream fragments
 from the HTTP server or CDN, and at the same time, it ask in advance for other
-stream fragments to other peers in the WebTorrent network. In case no peer has
-them, or it was not possible to connect to other peers (for example, due to
-network limitations), fragments are being keep fetched using the HTTP server or
-CDN. This **does not** prevent of using a HTTP server or CDN, just only helps to
-reduce costs by offloading server bandwidth usage to the peers.
+stream fragments to other peers in the WebTorrent network. P2P management is
+fully done on client side, so it's transparent to use any other HLS stream as
+source.
 
 ## How to use
 
 `wt-tracker` needs to be configured first, so add next content to a new
-`config.json` file:
+`config.json` file at project root:
 
 ```json
 {
@@ -89,9 +105,11 @@ reduce costs by offloading server bandwidth usage to the peers.
 For more configuration details and customization, take a look on
 [wt-tracker configuration](https://github.com/Novage/wt-tracker#configuration).
 
-After installing, `npm start` will start both the *test card generator* and the
-`wt-tracker` instance. To only run this last one, exec `npm run wt-tracker`
-instead.
+After installing, `npm start` will start the `wt-tracker` instance and serve the
+client. To run instead the *test card generator* and a development build of the
+client, just exec `npm run dev` instead. In addition to that, a couple of
+`systemd` service files are included, one for the `wt-tracker` and another for
+the test card generator. Just enable them and you are go.
 
 ## Notes
 
