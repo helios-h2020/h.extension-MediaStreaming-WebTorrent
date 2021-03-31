@@ -39,7 +39,7 @@ window.addEventListener('DOMContentLoaded', function()
   const playBtn = document.getElementById('play')
   const stopBtn = document.getElementById('stop')
 
-  trackers.value = config.trackers.join(',')
+  trackers.value = config.trackers.join('\n')
   stuns.value = config.stuns.join('\n')
   hlsUrl.value = config.hls
 
@@ -69,7 +69,7 @@ window.addEventListener('DOMContentLoaded', function()
 
     engine = new Engine({
       loader: {
-        trackerAnnounce: trackers.value.split(','),
+        trackerAnnounce: trackers.value.split('\n'),
         rtcConfig: {
           iceServers: stuns.value.split('\n').map(createIceServer)
         }
