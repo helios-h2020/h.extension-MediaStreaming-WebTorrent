@@ -19,4 +19,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: heliosh2020/p2p-mediastream:$(date +%s)
+        tags: heliosh2020/p2p-mediastream:latest
