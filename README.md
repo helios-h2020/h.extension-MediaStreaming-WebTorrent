@@ -1,3 +1,5 @@
+[![Docker Image CI](https://github.com/helios-h2020/h.extension-MediaStreaming-WebTorrent/actions/workflows/docker-image.yml/badge.svg)](https://github.com/helios-h2020/h.extension-MediaStreaming-WebTorrent/actions/workflows/docker-image.yml)
+
 # P2P mediastream
 
 Showcase of P2P HLS streaming using WebTorrent
