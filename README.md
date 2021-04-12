@@ -39,7 +39,7 @@ This proof-of-concept has five diferenciated components:
   to that, internally it's also working as WebRTC signaling server too. By
   default it use the tracker from [OpenWebTorrent](https://openwebtorrent.com/),
   but here we are using instead a instance of
-  [wt-tracker](https://github.com/Novage/wt-tracker). I've modified it to also
+  [wt-tracker](https://github.com/piranna/wt-tracker). I've modified it to also
   work as [static HTTP server](https://github.com/Novage/wt-tracker/issues/28)
   so it can serve too the WebTorrent client code and work as HLS streams server.
 - **STUN servers**: used to find clients public IPs, by default using the Google
