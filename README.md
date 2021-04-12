@@ -77,8 +77,17 @@ source.
 
 ## How to use
 
-`wt-tracker` needs to be configured first, so add next content to a new
-`config.json` file at project root:
+`wt-tracker` needs to be configured first, so run it with:
+
+```sh
+docker run \
+  -it
+  -p 49199
+  -v "$(pwd)"/config.json:/app/config.json:ro \
+  heliosh2020/p2p-mediastream
+```
+
+`config.json` file has a content similar to:
 
 ```json
 {
@@ -117,8 +126,8 @@ the test card generator. Just enable them and you are go.
 
 The `<video>` tag of this PoC has both the `autoplay` and `muted` attributes
 since starting Chrome 66 videos with sound are prevented to autoplay by default.
-You can find more info at https://stackoverflow.com/a/49822987/586382 and
-https://developers.google.com/web/updates/2017/09/autoplay-policy-changes.
+You can find more info at <https://stackoverflow.com/a/49822987/586382> and
+<https://developers.google.com/web/updates/2017/09/autoplay-policy-changes>.
 
 Video test card is using
 [lavfi](https://www.bogotobogo.com/FFMpeg/ffmpeg_video_test_patterns_src.php),
