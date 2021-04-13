@@ -19,8 +19,8 @@
     "not dead"
   ],
   "dependencies": {
-    "hls.js": "^0.14.17",
     "@helios-h2020/wt-tracker": "^0.0.1",
+    "hls.js": "^0.14.17",
     "p2p-graph": "piranna/p2p-graph",
     "p2p-media-loader-core": "^0.6.2",
     "p2p-media-loader-hlsjs": "^0.6.2",
