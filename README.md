@@ -1,6 +1,6 @@
-[![Docker Image CI](https://github.com/helios-h2020/h.extension-MediaStreaming-WebTorrent/actions/workflows/docker-image.yml/badge.svg)](https://github.com/helios-h2020/h.extension-MediaStreaming-WebTorrent/actions/workflows/docker-image.yml)
-
 # P2P mediastream
+
+[![Docker Image CI](https://github.com/helios-h2020/h.extension-MediaStreaming-WebTorrent/actions/workflows/docker-image.yml/badge.svg)](https://github.com/helios-h2020/h.extension-MediaStreaming-WebTorrent/actions/workflows/docker-image.yml)
 
 Showcase of P2P HLS streaming using WebTorrent
 
@@ -31,7 +31,7 @@ This proof-of-concept has five diferenciated components:
 
 - **test card generator**: a script that generates a HLS stream using
   [ffmpeg](https://www.ffmpeg.org/), and it's used as stream source only for
-  testing and demoing purposses. It store the HLS stream fragment filess in the
+  testing and demoing purposses. It store the HLS stream fragment files in the
   `hls/` folder and automatically deletes the old ones.
 - **static HTTP server**: used to serve both the webpage content and the HLS
   stream fragments.
@@ -40,40 +40,41 @@ This proof-of-concept has five diferenciated components:
   default it use the tracker from [OpenWebTorrent](https://openwebtorrent.com/),
   but here we are using instead a instance of
   [wt-tracker](https://github.com/piranna/wt-tracker). I've modified it to also
-  work as [static HTTP server](https://github.com/Novage/wt-tracker/issues/28)
+  [work as static HTTP server](https://github.com/Novage/wt-tracker/issues/28)
   so it can serve too the WebTorrent client code and work as HLS streams server.
 - **STUN servers**: used to find clients public IPs, by default using the Google
   public servers, but here I'm using my own ones. There's no need of using TURN
   servers since in case a direct WebRTC connection is not possible, using a TURN
   server would only add delays and extra costs compared to using a standard HLS
-  streaming, so instead clients are going to fetch fragment files directly from
-  the HLS stream server automatically as fallback.
+  streaming, so instead clients will fetch fragment files directly from the HLS
+  pstream server automatically as fallback.
 - **WebTorrent client**: powered by
   [P2P Media Loader](https://github.com/Novage/p2p-media-loader), it manages
   both the fetch and processing of the HLS stream from the P2P network, being
   fully automated. It supports working with both
   [hls.js](https://github.com/video-dev/hls.js) library (only HLS) and
   [Shaka Player](https://github.com/google/shaka-player) (both HLS and DASH),
-  and their derivatives, although this proof-of-concept is making use only of
-  the first one.
+  and it also works with their derivatives, although this proof-of-concept is
+  making use only of the first one.
 
 ## How it works
 
-For testing purposses, stream is just a video test card, being the .
+For testing purposes, stream is just a video test card, being the generator
+script available at `scripts/generate-video.sh`.
 
-P2P Media Loader starts downloading the stream fragments from the HLS stream,
+*P2P Media Loader* starts downloading the stream fragments from the HLS stream,
 that's using a HTTP server or a CDN. At the same time, it connects to the
 WebTorrent tracker using WebSockets to exchange the WebRTC SDPs to create
 connections with the other peers, and start using the BitTorrent protocol to
 find other peers and ask for missing stream fragments. In case a P2P connection
-can't be stablished, or no one has the missing fragments, they will still be
-fetch using regular HLS instead.
+can't be stablished, or no one of the other peers has the missing fragments,
+they will still be fetched using regular HLS instead.
 
 When the playing of the HLS stream starts, it first pick the stream fragments
 from the HTTP server or CDN, and at the same time, it ask in advance for other
-stream fragments to other peers in the WebTorrent network. P2P management is
-fully done on client side, so it's transparent to use any other HLS stream as
-source.
+stream fragments to other peers in the WebTorrent network. The P2P management
+and transmission is fully done on client side, so it's transparent to the HLS
+streams used as source.
 
 ## How to use
 
@@ -87,28 +88,32 @@ docker run \
   heliosh2020/p2p-mediastream
 ```
 
-`config.json` file has a content similar to:
+`config.json` file must have a content similar to:
 
 ```json
 {
-  "servers": [{
-      "server": {
-        "port": 49199,
-        "host": "0.0.0.0"
+  "servers":
+  [
+    {
+      "server":
+      {
+        "host": "0.0.0.0",
+        "port": 49199
       },
-      "websockets": {
-        "path": "/*",
-        "maxPayloadLength": 65536,
-        "idleTimeout": 240,
+      "websockets":
+      {
         "compression": 1,
-        "maxConnections": 0
+        "idleTimeout": 240,
+        "maxConnections": 0,
+        "maxPayloadLength": 65536,
+        "path": "/*"
       }
     }
   ],
-
-  "tracker": {
-    "maxOffers": 20,
-    "announceInterval": 120
+  "tracker":
+  {
+    "announceInterval": 120,
+    "maxOffers": 20
   }
 }
 ```
@@ -120,20 +125,21 @@ After installing, `npm start` will start the `wt-tracker` instance and serve the
 client. To run instead the *test card generator* and a development build of the
 client, just exec `npm run dev` instead. In addition to that, a couple of
 `systemd` service files are included, one for the `wt-tracker` and another for
-the test card generator. Just enable them and you are go.
+the test card generator. Just enable them and you are ready to go.
 
 ## Notes
 
 The `<video>` tag of this PoC has both the `autoplay` and `muted` attributes
-since starting Chrome 66 videos with sound are prevented to autoplay by default.
-You can find more info at <https://stackoverflow.com/a/49822987/586382> and
+because since Chrome 66, videos with sound are prevented to autoplay by default
+to prevent annoy users. You can find more info at
+<https://stackoverflow.com/a/49822987/586382> and
 <https://developers.google.com/web/updates/2017/09/autoplay-policy-changes>.
 
 Video test card is using
 [lavfi](https://www.bogotobogo.com/FFMpeg/ffmpeg_video_test_patterns_src.php),
 the *Libavfilter* input virtual device. More specifically, it's using the
-`testsrc` filter. To create a 10 seconds 1280x720px video at 30fps, just only
-exec:
+`testsrc` filter. For example, to create a 10 seconds 1280x720px video at 30fps,
+just only exec:
 
 ```sh
 ffmpeg -f lavfi -i testsrc=duration=10:size=1280x720:rate=30 testsrc.mpg
